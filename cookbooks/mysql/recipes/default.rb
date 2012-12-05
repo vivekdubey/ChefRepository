@@ -18,3 +18,9 @@ end
 service "mysqld" do
    action :start
 end
+#admin = data_bag_item('admin', 'root')
+puts admin['password']
+execute "set_root_password" do
+   command "mysqladmin -u root password #{admin['password']}"
+   notifies :restart,"service[mysqld]"
+end
