@@ -1,6 +1,15 @@
-cookbook_file "/var/chef/authentication.js" do
-    source "authentication.js"
+#cookbook_file "/var/chef/authentication.js" do
+ #   source "authentication.js"
+  #  action :create
+#end
+admins = data_bag('admins')
+admin  = data_bag_item('admins','root')
+template "/var/chef/authentication.js" do
+    source "authentication.js.erb"
     action :create
+    variables({
+    :password => admin['password']
+    })
 end
 template "/etc/yum.repos.d/10gen.repo" do
     source "10gen.repo.erb"
