@@ -6,8 +6,13 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-package "oracle-java7-jdk" do
-  source "/tmp/shared_files/jdk-7u10-linux-x64.rpm"
-  action :install
-  provider Chef::Provider::Package::Rpm
+script "install_jdk_rpm" do
+   interpreter "bash"
+   user "root"
+   cwd "/opt/install"
+   code <<-EOH
+      wget http://10.12.7.16/jdk-7u10-linux-x64.rpm
+      yum localinstall -y jdk-7u10-linux-x64.rpm
+   EOH
+   not_if {File.exists?('/usr/bin/java')}
 end
