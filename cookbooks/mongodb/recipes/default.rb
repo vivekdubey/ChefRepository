@@ -2,13 +2,17 @@
  #   source "authentication.js"
   #  action :create
 #end
-admins = data_bag('admins')
-admin  = data_bag_item('admins','root')
+#admins = data_bag('admins')
+#admin  = data_bag_item('admins','root')
+#secret = 
+puts node['mongodb']['secret_key']
+mongodb_secret = Chef::EncryptedDataBagItem.load_secret("#{node['mongodb']['secret_key']}")
+mongodb_creds = Chef::EncryptedDataBagItem.load("passwords", "mongodb", mongodb_secret)
 template "/var/chef/authentication.js" do
     source "authentication.js.erb"
     action :create
     variables({
-    :password => admin['password']
+    :password => mongodb_creds["password"]
     })
 end
 template "/etc/yum.repos.d/10gen.repo" do
